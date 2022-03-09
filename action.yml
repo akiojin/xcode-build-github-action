@@ -1,0 +1,34 @@
+name: 'xcode-build-github-action'
+description: ''
+inputs:
+  app-identifier:
+    description: 'The bundle identifier(s) of your app (comma-separated string or array of strings)'
+    required: true
+  type:
+    description: 'Define the profile type, can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution'
+    required: true
+  team-id:
+    description: 'The ID of your Developer Portal team if you're in multiple teams'
+    required: true
+  git-url:
+    description: 'URL to the git repo containing all the certificates'
+    required: true
+  git-passphase:
+    description: ''
+    required: true
+  api-key-base64:
+    description: ''
+    required: false
+  api-key-path:
+    description: 'Path to your App Store Connect API Key JSON file (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)'
+    required: false
+  keychain-password:
+    description: 'Password for the keychain if specified in the keychain parameter; default login keychain password if the kerchain parameter is omitted.'
+    required: false
+    default: ''
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+branding:
+  icon: "download"
+  color: "orange"
