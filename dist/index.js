@@ -7408,7 +7408,6 @@ const core = __importStar(__nccwpck_require__(127));
 const exec = __importStar(__nccwpck_require__(49));
 const os = __importStar(__nccwpck_require__(37));
 const tmp = __importStar(__nccwpck_require__(729));
-const path = __importStar(__nccwpck_require__(17));
 const fs = __importStar(__nccwpck_require__(292));
 const IsMacOS = os.platform() === 'darwin';
 function Run() {
@@ -7426,7 +7425,7 @@ function Run() {
             process.env.MATCH_GIT_URL = core.getInput('git-url');
             process.env.MATCH_PASSWORD = core.getInput('git-passphase');
             process.env.APP_STORE_CONNECT_API_KEY_PATH = APIKeyPath;
-            process.env.MATCH_KEYCHAIN_NAME = path.basename(core.getInput('keychain'));
+            process.env.MATCH_KEYCHAIN_NAME = core.getInput('keychain');
             process.env.MATCH_KEYCHAIN_PASSWORD = core.getInput('keychain-password');
             yield exec.exec('fastlane', ['match', '--readonly', 'true']);
         }
