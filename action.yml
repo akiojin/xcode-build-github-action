@@ -29,6 +29,11 @@ inputs:
       Path to your App Store Connect API Key JSON file
       (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)
     required: false
+  keychain:
+    description: >
+      Path of the keychain to use. If omitted, the default login keychain is used.
+    required: false
+    default: ''
   keychain-password:
     description: >
       Password for the keychain if specified in the keychain parameter;
