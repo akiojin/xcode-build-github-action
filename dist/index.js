@@ -7433,15 +7433,6 @@ function Run() {
         }
     });
 }
-function Cleanup() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-        }
-        catch (ex) {
-            core.setFailed(ex.message);
-        }
-    });
-}
 if (!IsMacOS) {
     core.setFailed('Action requires macOS agent.');
 }

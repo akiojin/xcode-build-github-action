@@ -30,14 +30,6 @@ async function Run()
 	}
 }
 
-async function Cleanup()
-{
-	try {
-	} catch (ex: any) {
-		core.setFailed(ex.message)
-	}
-}
-
 if (!IsMacOS) {
 	core.setFailed('Action requires macOS agent.')
 } else {
