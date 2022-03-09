@@ -33,7 +33,7 @@ inputs:
     description: >
       Password for the keychain if specified in the keychain parameter;
       default login keychain password if the kerchain parameter is omitted.
-    required: false
+    required: true
     default: ''
 runs:
   using: 'node16'

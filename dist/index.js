@@ -7423,9 +7423,9 @@ function Run() {
             process.env.MATCH_TYPE = core.getInput('type');
             process.env.FASTLANE_TEAM_ID = core.getInput('team-id');
             process.env.MATCH_GIT_URL = core.getInput('git-url');
+            process.env.MATCH_PASSWORD = core.getInput('git-passphase');
             process.env.APP_STORE_CONNECT_API_KEY_PATH = APIKeyPath;
             process.env.MATCH_KEYCHAIN_PASSWORD = core.getInput('keychain-password');
-            process.env.MATCH_PASSWORD = core.getInput('github-passphase');
             yield exec.exec('fastlane', ['match', '--readonly', 'true']);
         }
         catch (ex) {
