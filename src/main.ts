@@ -16,9 +16,14 @@ async function Run()
 			await fs.writeFile(APIKeyPath, Buffer.from(APIKeyBase64, 'base64'))
 		}
 
-		process.env.MATCH_APP_IDENTIFIER = core.getInput('app-identifier')
-		process.env.MATCH_TYPE = core.getInput('type')
-		process.env.FASTLANE_TEAM_ID = core.getInput('team-id')
+		const teamID = core.getInput('team-id')
+		const appID = core.getInput('app-identifier')
+		const exportMethod = core.getInput('export-method')
+		const provisioningProfileKeyName = `sigh_${appID}_${exportMethod}_profile-name`;
+
+		process.env.MATCH_APP_IDENTIFIER = appID
+		process.env.MATCH_TYPE = exportMethod
+		process.env.FASTLANE_TEAM_ID = teamID
 		process.env.MATCH_GIT_URL = core.getInput('git-url')
 		process.env.MATCH_PASSWORD = core.getInput('git-passphase')
 		process.env.APP_STORE_CONNECT_API_KEY_PATH = APIKeyPath
@@ -40,8 +45,14 @@ async function Run()
 		process.env.GYM_CONFIGURATION = core.getInput('configuration')
 		process.env.GYM_INCLUDE_BITCODE = core.getBooleanInput('include-bitcode').toString()
 		process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString()
-		process.env.GYM_EXPORT_METHOD = core.getInput('export-method')
-		process.env.GYM_EXPORT_TEAM_ID = core.getInput('team-id')
+		process.env.GYM_EXPORT_METHOD = exportMethod
+		process.env.GYM_EXPORT_TEAM_ID = teamID
+		process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="${process.env[provisioningProfileKeyName]}"`
+
+		console.log('ENVIRONMENT:')
+		Object.keys(process.env).sort().forEach(key => {
+			console.log(`${key}: ${process.env[key]}`)
+		});
 
 		await exec.exec('fastlane', ['gym'])
 	} catch (ex: any) {

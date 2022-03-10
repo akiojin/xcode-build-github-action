@@ -2,7 +2,9 @@ name: 'xcode-build-github-action'
 description: ''
 inputs:
   export-method:
-    description: ''
+    description: >
+      Define the profile type,
+      can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
     required: true
   configuration:
     description: ''
@@ -39,11 +41,6 @@ inputs:
   app-identifier:
     description: >
       The bundle identifier(s) of your app (comma-separated string or array of strings)
-    required: true
-  type:
-    description: >
-      Define the profile type,
-      can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
     required: true
   team-id:
     description: >
