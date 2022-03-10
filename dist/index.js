@@ -7422,7 +7422,6 @@ function Run() {
             const teamID = core.getInput('team-id');
             const appID = core.getInput('app-identifier');
             const exportMethod = core.getInput('export-method');
-            const provisioningProfileKeyName = `sigh_${appID}_${exportMethod}_profile-name`;
             process.env.MATCH_APP_IDENTIFIER = appID;
             process.env.MATCH_TYPE = exportMethod;
             process.env.FASTLANE_TEAM_ID = teamID;
@@ -7447,7 +7446,7 @@ function Run() {
             process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString();
             process.env.GYM_EXPORT_METHOD = exportMethod;
             process.env.GYM_EXPORT_TEAM_ID = teamID;
-            process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="${process.env[provisioningProfileKeyName]}"`;
+            process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="match ${exportMethod} ${appID}"`;
             console.log('ENVIRONMENT:');
             Object.keys(process.env).sort().forEach(key => {
                 console.log(`${key}: ${process.env[key]}`);

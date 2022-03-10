@@ -7,35 +7,41 @@ inputs:
       can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
     required: true
   configuration:
-    description: ''
+    description: >
+      The configuration to use when building the app. Defaults to 'Debug'
     required: false
     default: 'Debug'
   workspace:
-    description: ''
+    description: 'Path to the workspace file'
     required: false
     default: ''
   project:
-    description: ''
+    description: 'Path to the project file'
     required: false
     default: ''
   scheme:
-    description: ''
+    description: >
+      The project's scheme. Make sure it's marked as `Shared`, Defaults to 'Unity-iPhone'
     required: false
     default: 'Unity-iPhone'
   sdk:
-    description: ''
+    description: >
+      The SDK that should be used for building the application. Defaults to 'iphoneos'
     required: false
     default: 'iphoneos'
   include-bitcode:
-    description: ''
+    description: >
+      Should the ipa file include bitcode? Defaults to false
     required: false
     default: false
   include-symbols:
-    description: ''
+    description: >
+      Should the ipa file include symbols? Defaults to false
     required: false
     default: false
   output-directory:
-    description: ''
+    description: >
+      The directory in which the ipa file should be stored in
     required: true
     default: ''
   app-identifier:
