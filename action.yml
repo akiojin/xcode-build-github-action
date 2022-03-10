@@ -21,22 +21,32 @@ inputs:
     default: ''
   scheme:
     description: >
-      The project's scheme. Make sure it's marked as `Shared`, Defaults to 'Unity-iPhone'
+      The project's scheme. Make sure it's marked as `Shared`.
+      Defaults to 'Unity-iPhone'
     required: false
     default: 'Unity-iPhone'
   sdk:
     description: >
-      The SDK that should be used for building the application. Defaults to 'iphoneos'
+      The SDK that should be used for building the application.
+      Defaults to 'iphoneos'
     required: false
     default: 'iphoneos'
+  target-filter:
+    description: >
+      A filter for the target name. Use a standard regex.
+      Targets to be updated with mobileprovision, code signing identity, etc
+    required: false
+    default: 'Unity-iPhone'
   include-bitcode:
     description: >
-      Should the ipa file include bitcode? Defaults to false
+      Should the ipa file include bitcode?
+      Defaults to false
     required: false
     default: false
   include-symbols:
     description: >
-      Should the ipa file include symbols? Defaults to false
+      Should the ipa file include symbols?
+      Defaults to false
     required: false
     default: false
   output-directory:

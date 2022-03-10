@@ -67,13 +67,14 @@ async function Run()
 		const UUID = GetProvisioningProfileUUID(output)
 		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`
 		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
-		console.log(`ID=${UUID.substring(1)}`)
 
+		await exec.exec('ls', ['-la', `${process.env.PROVISIONING_PROFILE}`])
 		await exec.exec('fastlane', [
 			'run',
 			'update_project_provisioning',
 			`profile:"${process.env.PROVISIONING_PROFILE}"`,
-			`xcodeproj:"${process.env.GYM_PROJECT}"`
+			`xcodeproj:"${process.env.GYM_PROJECT}"`,
+			`target_filter:"${core.getInput('target-filter')}"`
 		])
 
 		process.env.GYM_SCHEME = core.getInput('scheme')
