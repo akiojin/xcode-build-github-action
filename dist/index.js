@@ -7440,8 +7440,7 @@ function Run() {
                 }
             };
             yield exec.exec('fastlane', ['match'], options);
-            const escapeAppID = appID.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
-            const match = output.match(new RegExp(".*Profile Name.*match.*" + escapeAppID + ".*$"));
+            const match = output.match(/.*Profile Name.*$/gm);
             if (match === null) {
                 throw new Error('Not found provisioning profile');
             }
