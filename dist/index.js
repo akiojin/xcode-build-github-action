@@ -7529,15 +7529,14 @@ function Run() {
                 process.env.GYM_PROJECT = core.getInput('project');
             }
             const UUID = GetProvisioningProfileUUID(output);
-            process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`;
-            ProvisioningProfile.Set(process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE);
-            yield exec.exec('ls', ['-la', `${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}`]);
-            process.env.FL_PROJECT_PROVISIONING_PROJECT_PATH = process.env.GYM_PROJECT;
+            process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`;
+            ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE);
+            io.cp(process.env.PROVISIONING_PROFILE, process.env.RUNNER_TEMP || '$RUNNER_TEMP');
             yield exec.exec('fastlane', [
                 'run',
                 'update_project_provisioning',
-                //			`profile:"${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}"`,
-                //			`xcodeproj:"${process.env.GYM_PROJECT}"`,
+                `profile:"${process.env.RUNNER_TEMP}/${UUID}.mobileprovision"`,
+                `xcodeproj:"${process.env.GYM_PROJECT}"`,
                 `target_filter:"${core.getInput('target-filter')}"`
             ]);
             process.env.GYM_SCHEME = core.getInput('scheme');
