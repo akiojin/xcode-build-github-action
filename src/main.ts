@@ -24,8 +24,22 @@ async function Run()
 		process.env.APP_STORE_CONNECT_API_KEY_PATH = APIKeyPath
 		process.env.MATCH_KEYCHAIN_NAME = core.getInput('keychain')
 		process.env.MATCH_KEYCHAIN_PASSWORD = core.getInput('keychain-password')
+		process.env.MATCH_READONLY = 'true'
 
-		await exec.exec('fastlane', ['match', '--readonly', 'true'])
+		await exec.exec('fastlane', ['match'])
+
+		const workspace = core.getInput('workspace')
+		process.env.GYM_WORKSPACE = workspace
+		process.env.GYM_PROJECT = workspace === '' ? core.getInput('project') : ''
+		process.env.GYM_SCHEME = core.getInput('scheme')
+		process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory')
+		process.env.GYM_CONFIGURATION = core.getInput('configuration')
+		process.env.GYM_INCLUDE_BITCODE = core.getBooleanInput('include-bitcode').toString()
+		process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString()
+		process.env.GYM_EXPORT_METHOD = core.getInput('export-method')
+		process.env.GYM_EXPORT_TEAM_ID = core.getInput('team-id')
+
+		await exec.exec('fastlane', ['gym'])
 	} catch (ex: any) {
 		core.setFailed(ex.message)
 	}

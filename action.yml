@@ -1,6 +1,41 @@
 name: 'xcode-build-github-action'
 description: ''
 inputs:
+  export-method:
+    description: ''
+    required: true
+  configuration:
+    description: ''
+    required: false
+    default: 'Debug'
+  workspace:
+    description: ''
+    required: false
+    default: ''
+  project:
+    description: ''
+    required: false
+    default: ''
+  scheme:
+    description: ''
+    required: false
+    default: 'Unity-iPhone'
+  sdk:
+    description: ''
+    required: false
+    default: 'iphoneos'
+  include-bitcode:
+    description: ''
+    required: false
+    default: false
+  include-symbols:
+    description: ''
+    required: false
+    default: false
+  output-directory:
+    description: ''
+    required: true
+    default: ''
   app-identifier:
     description: >
       The bundle identifier(s) of your app (comma-separated string or array of strings)
@@ -40,6 +75,9 @@ inputs:
       default login keychain password if the kerchain parameter is omitted.
     required: true
     default: ''
+outputs:
+  provisioning-profile:
+    description: 'The file path for Provisioning Profile.'
 runs:
   using: 'node16'
   main: 'dist/index.js'
