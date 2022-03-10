@@ -56,11 +56,16 @@ inputs:
     description: >
       URL to the git repo containing all the certificates
     required: true
-  git-passphase:
-    description: ''
+  git-passphrase:
+    description: >
+      When running match for the first time on a new machine,
+      it will ask you for the passphrase for the Git repository.
+      This is an additional layer of security: each of the files will be encrypted using openssl.
     required: true
   api-key-base64:
-    description: ''
+    description: >
+      Your App Store Connect API Key information
+      (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-hash-option)
     required: false
   api-key-path:
     description: >

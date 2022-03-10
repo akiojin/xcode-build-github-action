@@ -24,7 +24,7 @@ async function Run()
 		process.env.MATCH_TYPE = exportMethod
 		process.env.FASTLANE_TEAM_ID = teamID
 		process.env.MATCH_GIT_URL = core.getInput('git-url')
-		process.env.MATCH_PASSWORD = core.getInput('git-passphase')
+		process.env.MATCH_PASSWORD = core.getInput('git-passphrase')
 		process.env.APP_STORE_CONNECT_API_KEY_PATH = APIKeyPath
 		process.env.MATCH_KEYCHAIN_NAME = core.getInput('keychain')
 		process.env.MATCH_KEYCHAIN_PASSWORD = core.getInput('keychain-password')
@@ -47,11 +47,6 @@ async function Run()
 		process.env.GYM_EXPORT_METHOD = exportMethod
 		process.env.GYM_EXPORT_TEAM_ID = teamID
 		process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="match ${exportMethod} ${appID}"`
-
-		console.log('ENVIRONMENT:')
-		Object.keys(process.env).sort().forEach(key => {
-			console.log(`${key}: ${process.env[key]}`)
-		});
 
 		await exec.exec('fastlane', ['gym'])
 	} catch (ex: any) {
