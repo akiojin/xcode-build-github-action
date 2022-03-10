@@ -64,10 +64,11 @@ async function Run()
 			process.env.GYM_PROJECT = core.getInput('project')
 		}
 
-		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`
+		const UUID = GetProvisioningProfileUUID(output)
+		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`
 		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
+		console.log(`ID=${UUID.substring(1)}`)
 
-		await exec.exec('ls', ['-la', `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles`])
 		await exec.exec('fastlane', [
 			'run',
 			'update_project_provisioning',
