@@ -7547,6 +7547,8 @@ function Run() {
             process.env.GYM_EXPORT_METHOD = exportMethod;
             process.env.GYM_EXPORT_TEAM_ID = teamID;
             yield exec.exec('fastlane', ['gym']);
+            const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            yield _sleep(3 * 60 * 1000);
         }
         catch (ex) {
             core.setFailed(ex.message);
