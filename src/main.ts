@@ -67,8 +67,12 @@ async function Run()
 		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`
 		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
 
-//		await exec.exec('fastlane', ['run', 'update_project_provisioning', `profile:"${process.env.PROVISIONING_PROFILE}"`, `xcodeproj:"${process.env.GYM_PROJECT}"`])
-		await exec.exec('fastlane', ['run', 'update_project_provisioning', `xcodeproj:"${process.env.GYM_PROJECT}"`])
+		await exec.exec('fastlane', [
+			'run',
+			'update_project_provisioning',
+			`profile:"${process.env.PROVISIONING_PROFILE}"`,
+			`xcodeproj:"${process.env.GYM_PROJECT}"`
+		])
 
 		process.env.GYM_SCHEME = core.getInput('scheme')
 		process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory')
@@ -87,6 +91,7 @@ async function Run()
 async function Cleanup()
 {
 	try {
+		core.info('Remove provisioning profile')
 		await io.rmRF(ProvisioningProfile.Get())
 	} catch (ex: any) {
 		core.setFailed(ex.message)
