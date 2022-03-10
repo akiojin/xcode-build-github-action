@@ -1,10 +1,37 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
+import * as io from '@actions/io'
 import * as os from 'os'
 import * as tmp from 'tmp'
 import * as fs from 'fs/promises';
+import { BooleanStateValue, StringStateValue } from './StateHelper'
 
 const IsMacOS = os.platform() === 'darwin'
+
+const PostProcess = new BooleanStateValue('IS_POST_PROCESS')
+const ProvisioningProfile = new StringStateValue('PROVISIONING_PROFILE')
+
+function GetProvisioningProfileName(output: string): string
+{
+	const match = output.match(/.*Profile Name.*$/gm)
+
+	if (match === null) {
+		throw new Error('Not found provisioning profile')
+	}
+
+	return match.join("\n").split('|')[3].trim()
+}
+
+function GetProvisioningProfileUUID(output: string): string
+{
+	const match = output.match(/.*Profile UUID.*$/gm)
+
+	if (match === null) {
+		throw new Error('Not found provisioning profile')
+	}
+
+	return match.join("\n").split('|')[3].trim()
+}
 
 async function Run()
 {
@@ -41,11 +68,8 @@ async function Run()
 
 		await exec.exec('fastlane', ['match'], options)
 
-		const match = output.match(/.*Profile Name.*$/gm)
-		if (match === null) {
-			throw new Error('Not found provisioning profile')
-		}
-		const provisioningProfileName = match.join("\n").split('|')[3].trim()
+		const provisioningProfileName = GetProvisioningProfileName(output)
+		ProvisioningProfile.Set(`${process.env.HOME}/Library/MobileDevice/Provisioning\ Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`)
 
 		const workspace = core.getInput('workspace')
 		if (workspace !== '') {
@@ -69,8 +93,23 @@ async function Run()
 	}
 }
 
+async function Cleanup()
+{
+	try {
+		await io.rmRF(ProvisioningProfile.Get())
+	} catch (ex: any) {
+		core.setFailed(ex.message)
+	}
+}
+
 if (!IsMacOS) {
 	core.setFailed('Action requires macOS agent.')
 } else {
-	Run()
+	if (!!PostProcess.Get()) {
+		Cleanup()
+	} else {
+		Run()
+	}
+	
+	PostProcess.Set(true)
 }

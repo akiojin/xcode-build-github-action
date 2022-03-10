@@ -7366,6 +7366,76 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 968:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BooleanStateValue = exports.StringStateValue = exports.StateHelper = void 0;
+const coreCommand = __importStar(__nccwpck_require__(604));
+class StateHelper {
+    static Set(key, value) {
+        coreCommand.issueCommand('save-state', { name: key }, value);
+    }
+    static Get(key) {
+        return process.env[`STATE_${key}`] || '';
+    }
+}
+exports.StateHelper = StateHelper;
+class StringStateValue {
+    constructor(key) {
+        this.key = '';
+        this.key = key;
+    }
+    Set(value) {
+        StateHelper.Set(this.key, value);
+    }
+    Get() {
+        return StateHelper.Get(this.key);
+    }
+}
+exports.StringStateValue = StringStateValue;
+class BooleanStateValue {
+    constructor(key) {
+        this.key = '';
+        this.key = key;
+    }
+    Set(value) {
+        StateHelper.Set(this.key, value.toString());
+    }
+    Get() {
+        return !!StateHelper.Get(this.key);
+    }
+}
+exports.BooleanStateValue = BooleanStateValue;
+
+
+/***/ }),
+
 /***/ 116:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -7406,10 +7476,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(127));
 const exec = __importStar(__nccwpck_require__(49));
+const io = __importStar(__nccwpck_require__(864));
 const os = __importStar(__nccwpck_require__(37));
 const tmp = __importStar(__nccwpck_require__(729));
 const fs = __importStar(__nccwpck_require__(292));
+const StateHelper_1 = __nccwpck_require__(968);
 const IsMacOS = os.platform() === 'darwin';
+const PostProcess = new StateHelper_1.BooleanStateValue('IS_POST_PROCESS');
+const ProvisioningProfile = new StateHelper_1.StringStateValue('PROVISIONING_PROFILE');
+function GetProvisioningProfileName(output) {
+    const match = output.match(/.*Profile Name.*$/gm);
+    if (match === null) {
+        throw new Error('Not found provisioning profile');
+    }
+    return match.join("\n").split('|')[3].trim();
+}
+function GetProvisioningProfileUUID(output) {
+    const match = output.match(/.*Profile UUID.*$/gm);
+    if (match === null) {
+        throw new Error('Not found provisioning profile');
+    }
+    return match.join("\n").split('|')[3].trim();
+}
 function Run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -7440,11 +7528,8 @@ function Run() {
                 }
             };
             yield exec.exec('fastlane', ['match'], options);
-            const match = output.match(/.*Profile Name.*$/gm);
-            if (match === null) {
-                throw new Error('Not found provisioning profile');
-            }
-            const provisioningProfileName = match.join("\n").split('|')[3].trim();
+            const provisioningProfileName = GetProvisioningProfileName(output);
+            ProvisioningProfile.Set(`${process.env.HOME}/Library/MobileDevice/Provisioning\ Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`);
             const workspace = core.getInput('workspace');
             if (workspace !== '') {
                 process.env.GYM_WORKSPACE = workspace;
@@ -7467,11 +7552,27 @@ function Run() {
         }
     });
 }
+function Cleanup() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield io.rmRF(ProvisioningProfile.Get());
+        }
+        catch (ex) {
+            core.setFailed(ex.message);
+        }
+    });
+}
 if (!IsMacOS) {
     core.setFailed('Action requires macOS agent.');
 }
 else {
-    Run();
+    if (!!PostProcess.Get()) {
+        Cleanup();
+    }
+    else {
+        Run();
+    }
+    PostProcess.Set(true);
 }
 
 
