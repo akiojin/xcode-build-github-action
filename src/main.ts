@@ -64,7 +64,7 @@ async function Run()
 			process.env.GYM_PROJECT = core.getInput('project')
 		}
 
-		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning\ Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`
+		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`
 		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
 
 		await exec.exec('fastlane', ['run', 'update_project_provisioning', `profile:"${process.env.PROVISIONING_PROFILE}"`, `xcodeproj:"${process.env.GYM_PROJECT}"`])
