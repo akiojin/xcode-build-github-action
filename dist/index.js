@@ -7430,8 +7430,12 @@ function Run() {
             process.env.MATCH_READONLY = 'true';
             yield exec.exec('fastlane', ['match']);
             const workspace = core.getInput('workspace');
-            process.env.GYM_WORKSPACE = workspace;
-            process.env.GYM_PROJECT = workspace === '' ? core.getInput('project') : '';
+            if (workspace !== '') {
+                process.env.GYM_WORKSPACE = workspace;
+            }
+            else {
+                process.env.GYM_PROJECT = core.getInput('project');
+            }
             process.env.GYM_SCHEME = core.getInput('scheme');
             process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory');
             process.env.GYM_CONFIGURATION = core.getInput('configuration');
