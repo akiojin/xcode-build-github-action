@@ -86,12 +86,12 @@ async function Run()
 		process.env.GYM_EXPORT_TEAM_ID = teamID
 
 		await exec.exec('fastlane', ['gym'])
-
-		const _sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-		await _sleep(3 * 60 * 1000)
 	} catch (ex: any) {
 		core.setFailed(ex.message)
 	}
+
+	const _sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+	await _sleep(3 * 60 * 1000)
 }
 
 async function Cleanup()
