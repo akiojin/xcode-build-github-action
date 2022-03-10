@@ -68,11 +68,11 @@ async function Run()
 		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`
 		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
 
-		io.cp(process.env.PROVISIONING_PROFILE, process.env.RUNNER_TEMP || '$RUNNER_TEMP')
+		io.cp(process.env.PROVISIONING_PROFILE, `${process.env.RUNNER_TEMP || '$RUNNER_TEMP'}/temp-provisiong-profile.mobileprovision`)
 		await exec.exec('fastlane', [
 			'run',
 			'update_project_provisioning',
-			`profile:"${process.env.RUNNER_TEMP}/${UUID}.mobileprovision"`,
+			`profile:"${process.env.RUNNER_TEMP}/temp-provisiong-profile.mobileprovision"`,
 			`xcodeproj:"${process.env.GYM_PROJECT}"`,
 			`target_filter:"${core.getInput('target-filter')}"`
 		])
