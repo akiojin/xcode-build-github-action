@@ -41,7 +41,8 @@ async function Run()
 
 		await exec.exec('fastlane', ['match'], options)
 
-		const match = output.match(new RegExp(".*Profile Name.*match.*" + appID + ".*$"))
+		const escapeAppID = appID.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')
+		const match = output.match(new RegExp(".*Profile Name.*match.*" + escapeAppID + ".*$"))
 		if (match === null) {
 			throw new Error('Not found provisioning profile')
 		}
