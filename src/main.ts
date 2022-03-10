@@ -67,6 +67,7 @@ async function Run()
 		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`
 		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
 
+		await exec.exec('ls', ['-la', `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles`])
 		await exec.exec('fastlane', [
 			'run',
 			'update_project_provisioning',

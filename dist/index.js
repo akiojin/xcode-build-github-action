@@ -7530,6 +7530,7 @@ function Run() {
             }
             process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`;
             ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE);
+            yield exec.exec('ls', ['-la', `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles`]);
             yield exec.exec('fastlane', [
                 'run',
                 'update_project_provisioning',
