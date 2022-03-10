@@ -65,14 +65,14 @@ async function Run()
 		}
 
 		const UUID = GetProvisioningProfileUUID(output)
-		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`
-		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
+		process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`
+		ProvisioningProfile.Set(process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE)
 
-		await exec.exec('ls', ['-la', `${process.env.PROVISIONING_PROFILE}`])
+		await exec.exec('ls', ['-la', `${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}`])
 		await exec.exec('fastlane', [
 			'run',
 			'update_project_provisioning',
-			`profile:"${process.env.PROVISIONING_PROFILE}"`,
+//			`profile:"${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}"`,
 			`xcodeproj:"${process.env.GYM_PROJECT}"`,
 			`target_filter:"${core.getInput('target-filter')}"`
 		])
