@@ -30,7 +30,17 @@ async function Run()
 		process.env.MATCH_KEYCHAIN_PASSWORD = core.getInput('keychain-password')
 		process.env.MATCH_READONLY = 'true'
 
-		await exec.exec('fastlane', ['match'])
+		let output: string = ''
+		const options: exec.ExecOptions = {
+			listeners: {
+				stdout: (data: Buffer) => {
+					output += data.toString()
+				}
+			}
+		}
+
+		await exec.exec('fastlane', ['match'], options)
+		const provisioningProfileName = output.split('|')[3].trim()
 
 		const workspace = core.getInput('workspace')
 		if (workspace !== '') {
@@ -46,7 +56,7 @@ async function Run()
 		process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString()
 		process.env.GYM_EXPORT_METHOD = exportMethod
 		process.env.GYM_EXPORT_TEAM_ID = teamID
-		process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="match ${exportMethod} ${appID}"`
+		process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="${provisioningProfileName}"`
 
 		await exec.exec('fastlane', ['gym'])
 	} catch (ex: any) {

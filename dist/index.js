@@ -7431,7 +7431,16 @@ function Run() {
             process.env.MATCH_KEYCHAIN_NAME = core.getInput('keychain');
             process.env.MATCH_KEYCHAIN_PASSWORD = core.getInput('keychain-password');
             process.env.MATCH_READONLY = 'true';
-            yield exec.exec('fastlane', ['match']);
+            let output = '';
+            const options = {
+                listeners: {
+                    stdout: (data) => {
+                        output += data.toString();
+                    }
+                }
+            };
+            yield exec.exec('fastlane', ['match'], options);
+            const provisioningProfileName = output.split('|')[3].trim();
             const workspace = core.getInput('workspace');
             if (workspace !== '') {
                 process.env.GYM_WORKSPACE = workspace;
@@ -7446,7 +7455,7 @@ function Run() {
             process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString();
             process.env.GYM_EXPORT_METHOD = exportMethod;
             process.env.GYM_EXPORT_TEAM_ID = teamID;
-            process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="match ${exportMethod} ${appID}"`;
+            process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="${provisioningProfileName}"`;
             yield exec.exec('fastlane', ['gym']);
         }
         catch (ex) {
