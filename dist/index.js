@@ -7532,11 +7532,12 @@ function Run() {
             process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE = `${process.env.HOME}/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision`;
             ProvisioningProfile.Set(process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE);
             yield exec.exec('ls', ['-la', `${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}`]);
+            process.env.FL_PROJECT_PROVISIONING_PROJECT_PATH = process.env.GYM_PROJECT;
             yield exec.exec('fastlane', [
                 'run',
                 'update_project_provisioning',
                 //			`profile:"${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}"`,
-                `xcodeproj:"${process.env.GYM_PROJECT}"`,
+                //			`xcodeproj:"${process.env.GYM_PROJECT}"`,
                 `target_filter:"${core.getInput('target-filter')}"`
             ]);
             process.env.GYM_SCHEME = core.getInput('scheme');
@@ -7551,8 +7552,6 @@ function Run() {
         catch (ex) {
             core.setFailed(ex.message);
         }
-        const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-        yield _sleep(3 * 60 * 1000);
     });
 }
 function Cleanup() {

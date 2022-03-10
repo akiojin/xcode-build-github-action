@@ -69,11 +69,13 @@ async function Run()
 		ProvisioningProfile.Set(process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE)
 
 		await exec.exec('ls', ['-la', `${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}`])
+
+		process.env.FL_PROJECT_PROVISIONING_PROJECT_PATH = process.env.GYM_PROJECT
 		await exec.exec('fastlane', [
 			'run',
 			'update_project_provisioning',
 //			`profile:"${process.env.FL_PROJECT_PROVISIONING_PROFILE_FILE}"`,
-			`xcodeproj:"${process.env.GYM_PROJECT}"`,
+//			`xcodeproj:"${process.env.GYM_PROJECT}"`,
 			`target_filter:"${core.getInput('target-filter')}"`
 		])
 
@@ -89,9 +91,6 @@ async function Run()
 	} catch (ex: any) {
 		core.setFailed(ex.message)
 	}
-
-	const _sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-	await _sleep(3 * 60 * 1000)
 }
 
 async function Cleanup()
