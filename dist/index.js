@@ -7440,7 +7440,11 @@ function Run() {
                 }
             };
             yield exec.exec('fastlane', ['match'], options);
-            const provisioningProfileName = output.split('|')[3].trim();
+            const match = output.match(new RegExp(".*Profile Name.*match.*" + appID + ".*$"));
+            if (match === null) {
+                throw new Error('Not found provisioning profile');
+            }
+            const provisioningProfileName = match.join("\n").split('|')[3].trim();
             const workspace = core.getInput('workspace');
             if (workspace !== '') {
                 process.env.GYM_WORKSPACE = workspace;
