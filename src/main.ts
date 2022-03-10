@@ -11,17 +11,6 @@ const IsMacOS = os.platform() === 'darwin'
 const PostProcess = new BooleanStateValue('IS_POST_PROCESS')
 const ProvisioningProfile = new StringStateValue('PROVISIONING_PROFILE')
 
-function GetProvisioningProfileName(output: string): string
-{
-	const match = output.match(/.*Profile Name.*$/gm)
-
-	if (match === null) {
-		throw new Error('Not found provisioning profile')
-	}
-
-	return match.join("\n").split('|')[3].trim()
-}
-
 function GetProvisioningProfileUUID(output: string): string
 {
 	const match = output.match(/.*Profile UUID.*$/gm)
@@ -68,15 +57,17 @@ async function Run()
 
 		await exec.exec('fastlane', ['match'], options)
 
-		const provisioningProfileName = GetProvisioningProfileName(output)
-		ProvisioningProfile.Set(`${process.env.HOME}/Library/MobileDevice/Provisioning\ Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`)
-
 		const workspace = core.getInput('workspace')
 		if (workspace !== '') {
 			process.env.GYM_WORKSPACE = workspace
 		} else {
 			process.env.GYM_PROJECT = core.getInput('project')
 		}
+
+		process.env.PROVISIONING_PROFILE = `${process.env.HOME}/Library/MobileDevice/Provisioning\ Profiles/${GetProvisioningProfileUUID(output)}.mobileprovision`
+		ProvisioningProfile.Set(process.env.PROVISIONING_PROFILE)
+
+		await exec.exec('fastlane', ['run', 'update_project_provisioning', `profile:"${process.env.PROVISIONING_PROFILE}"`, `xcodeproj:"${process.env.GYM_PROJECT}"`])
 
 		process.env.GYM_SCHEME = core.getInput('scheme')
 		process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory')
@@ -85,7 +76,6 @@ async function Run()
 		process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString()
 		process.env.GYM_EXPORT_METHOD = exportMethod
 		process.env.GYM_EXPORT_TEAM_ID = teamID
-		process.env.GYM_XCARGS = `PROVISIONING_PROFILE_SPECIFIER="${provisioningProfileName}"`
 
 		await exec.exec('fastlane', ['gym'])
 	} catch (ex: any) {
