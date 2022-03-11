@@ -48,10 +48,6 @@ inputs:
       The directory in which the ipa file should be stored in
     required: true
     default: ''
-  app-identifier:
-    description: >
-      The bundle identifier(s) of your app (comma-separated string or array of strings)
-    required: true
   team-id:
     description: >
       The ID of your Developer Portal team if you're in multiple teams
