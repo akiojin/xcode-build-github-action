@@ -5,10 +5,12 @@ inputs:
     description: >
       Define the profile type,
       can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
-    required: true
+    required: false
+    default: 'development'
   configuration:
     description: >
-      The configuration to use when building the app. Defaults to 'Debug'
+      The configuration to use when building the app.
+      Defaults to 'Debug'
     required: false
     default: 'Debug'
   workspace:
@@ -21,7 +23,7 @@ inputs:
     default: ''
   scheme:
     description: >
-      The project's scheme. Make sure it's marked as `Shared`.
+      The project's scheme.
       Defaults to 'Unity-iPhone'
     required: false
     default: 'Unity-iPhone'
@@ -45,16 +47,15 @@ inputs:
     default: false
   output-directory:
     description: >
-      The directory in which the ipa file should be stored in
+      The directory in which the ipa file should be stored in.
     required: true
-    default: ''
   team-id:
     description: >
-      The ID of your Developer Portal team if you're in multiple teams
+      The ID of your Developer Portal team if you're in multiple teams.
     required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
 branding:
-  icon: "download"
+  icon: "box"
   color: "orange"
