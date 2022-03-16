@@ -14,7 +14,7 @@ brew install fastlane
 
 ### Simple usage
 ```yml
-- uses: akiojin/xcode-build-github-action@v1.0
+- uses: akiojin/xcode-build-github-action@v1
   id: xcode-build
   with:
     export-method: 'development'

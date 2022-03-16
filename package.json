@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/akiojin/xcode-bulid-github-action.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["Xcode", "Unity"],
+  "author": "akiojin",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/akiojin/xcode-bulid-github-action/issues"
