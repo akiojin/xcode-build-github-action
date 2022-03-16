@@ -1,5 +1,5 @@
 name: 'xcode-build-github-action'
-description: ''
+description: 'This action will build with Xcode and output ipa.'
 inputs:
   export-method:
     description: >
