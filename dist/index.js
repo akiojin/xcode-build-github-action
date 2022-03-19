@@ -2850,43 +2850,34 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(127));
 const exec = __importStar(__nccwpck_require__(49));
 const os = __importStar(__nccwpck_require__(37));
 const IsMacOS = os.platform() === 'darwin';
-function Run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const workspace = core.getInput('workspace');
-            if (workspace !== '') {
-                process.env.GYM_WORKSPACE = workspace;
-            }
-            else {
-                process.env.GYM_PROJECT = core.getInput('project');
-            }
-            process.env.GYM_SCHEME = core.getInput('scheme');
-            process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory');
-            process.env.GYM_CONFIGURATION = core.getInput('configuration');
-            process.env.GYM_INCLUDE_BITCODE = core.getBooleanInput('include-bitcode').toString();
-            process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString();
-            process.env.GYM_EXPORT_METHOD = core.getInput('export-method');
-            process.env.GYM_EXPORT_TEAM_ID = core.getInput('team-id');
-            yield exec.exec('fastlane', ['gym']);
+async function Run() {
+    try {
+        const workspace = core.getInput('workspace');
+        if (workspace !== '') {
+            process.env.GYM_WORKSPACE = workspace;
         }
-        catch (ex) {
-            core.setFailed(ex.message);
+        else {
+            process.env.GYM_PROJECT = core.getInput('project');
         }
-    });
+        process.env.GYM_SCHEME = core.getInput('scheme');
+        process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory');
+        process.env.GYM_CONFIGURATION = core.getInput('configuration');
+        process.env.GYM_INCLUDE_BITCODE = core.getBooleanInput('include-bitcode').toString();
+        process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString();
+        process.env.GYM_EXPORT_METHOD = core.getInput('export-method');
+        process.env.GYM_EXPORT_TEAM_ID = core.getInput('team-id');
+        core.startGroup('fastlane "gym"');
+        await exec.exec('fastlane', ['gym']);
+        core.endGroup();
+    }
+    catch (ex) {
+        core.setFailed(ex.message);
+    }
 }
 if (!IsMacOS) {
     core.setFailed('Action requires macOS agent.');
