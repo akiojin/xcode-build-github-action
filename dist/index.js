@@ -2871,7 +2871,7 @@ async function Run() {
         process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString();
         process.env.GYM_EXPORT_METHOD = core.getInput('export-method');
         process.env.GYM_EXPORT_TEAM_ID = core.getInput('team-id');
-        core.startGroup('fastlane "gym"');
+        core.startGroup('Run fastlane "gym"');
         await exec.exec('fastlane', ['gym']);
         core.endGroup();
     }
