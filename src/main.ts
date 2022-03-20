@@ -1,30 +1,41 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
+import { ArgumentBuilder } from '@akiojin/argument-builder'
 import * as os from 'os'
 
 const IsMacOS = os.platform() === 'darwin'
 
+async function BuildXcodeProject()
+{
+	const builder = new ArgumentBuilder()
+	builder.Append('gym')
+
+	const workspace = core.getInput('workspace')
+	if (workspace !== '') {
+		builder.Append('--workspace', workspace)
+	} else {
+		builder.Append('--project', core.getInput('project'))
+	}
+
+	builder
+		.Append('--scheme', core.getInput('scheme'))
+		.Append('--sdk', core.getInput('sdk'))
+		.Append('--output_directory', core.getInput('output-directory'))
+		.Append('--configuration', core.getInput('configuration'))
+		.Append('--include_bitcode', core.getBooleanInput('include-bitcode').toString())
+		.Append('--include_symbols', core.getBooleanInput('include-symbols').toString())
+		.Append('--export_method', core.getInput('export-method'))
+		.Append('--export_team_id', core.getInput('team-id'))
+
+	core.startGroup('Run fastlane "gym"')
+	await exec.exec('fastlane', builder.Build())
+	core.endGroup()
+}
+
 async function Run()
 {
 	try {
-		const workspace = core.getInput('workspace')
-		if (workspace !== '') {
-			process.env.GYM_WORKSPACE = workspace
-		} else {
-			process.env.GYM_PROJECT = core.getInput('project')
-		}
-
-		process.env.GYM_SCHEME = core.getInput('scheme')
-		process.env.GYM_OUTPUT_DIRECTORY = core.getInput('output-directory')
-		process.env.GYM_CONFIGURATION = core.getInput('configuration')
-		process.env.GYM_INCLUDE_BITCODE = core.getBooleanInput('include-bitcode').toString()
-		process.env.GYM_INCLUDE_SYMBOLS = core.getBooleanInput('include-symbols').toString()
-		process.env.GYM_EXPORT_METHOD = core.getInput('export-method')
-		process.env.GYM_EXPORT_TEAM_ID = core.getInput('team-id')
-
-		core.startGroup('Run fastlane "gym"')
-		await exec.exec('fastlane', ['gym'])
-		core.endGroup()
+		BuildXcodeProject()
 	} catch (ex: any) {
 		core.setFailed(ex.message)
 	}

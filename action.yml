@@ -10,6 +10,7 @@ inputs:
   configuration:
     description: >
       The configuration to use when building the app.
+      Specify 'Debug' or 'Release'.
       Defaults to 'Debug'
     required: false
     default: 'Debug'
