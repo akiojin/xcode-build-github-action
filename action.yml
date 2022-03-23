@@ -1,25 +1,21 @@
 name: 'xcode-build-github-action'
 description: 'This action will build with Xcode and output ipa.'
 inputs:
-  export-method:
-    description: >
-      Define the profile type,
-      can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
-    required: false
-    default: 'development'
-  configuration:
-    description: >
-      The configuration to use when building the app.
-      Specify 'Debug' or 'Release'.
-      Defaults to 'Debug'
-    required: false
-    default: 'Debug'
   workspace:
     description: 'Path to the workspace file'
     required: false
     default: ''
   project:
     description: 'Path to the project file'
+    required: false
+    default: ''
+  output-directory:
+    description: >
+      The directory in which the ipa file should be stored in.
+    required: true
+  output-name:
+    description: >
+      Specifies the name of the ipa file to be output.
     required: false
     default: ''
   scheme:
@@ -34,6 +30,19 @@ inputs:
       Defaults to 'iphoneos'
     required: false
     default: 'iphoneos'
+  configuration:
+    description: >
+      The configuration to use when building the app.
+      Specify 'Debug' or 'Release'.
+      Defaults to 'Debug'
+    required: false
+    default: 'Debug'
+  export-method:
+    description: >
+      Define the profile type,
+      can be appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
+    required: false
+    default: 'development'
   include-bitcode:
     description: >
       Should the ipa file include bitcode?
@@ -46,10 +55,6 @@ inputs:
       Defaults to false
     required: false
     default: false
-  output-directory:
-    description: >
-      The directory in which the ipa file should be stored in.
-    required: true
   team-id:
     description: >
       The ID of your Developer Portal team if you're in multiple teams.

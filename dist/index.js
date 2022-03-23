@@ -2988,14 +2988,17 @@ async function BuildXcodeProject() {
         builder.Append('--project', core.getInput('project'));
     }
     builder
+        .Append('--output_directory', core.getInput('output-directory'))
         .Append('--scheme', core.getInput('scheme'))
         .Append('--sdk', core.getInput('sdk'))
-        .Append('--output_directory', core.getInput('output-directory'))
         .Append('--configuration', core.getInput('configuration'))
         .Append('--include_bitcode', core.getBooleanInput('include-bitcode').toString())
         .Append('--include_symbols', core.getBooleanInput('include-symbols').toString())
         .Append('--export_method', core.getInput('export-method'))
         .Append('--export_team_id', core.getInput('team-id'));
+    if (core.getInput('output-name') !== '') {
+        builder.Append('--output_name', core.getInput('output-name'));
+    }
     core.startGroup('Run fastlane "gym"');
     await exec.exec('fastlane', builder.Build());
     core.endGroup();
