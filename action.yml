@@ -1,6 +1,12 @@
 name: 'xcode-build-github-action'
 description: 'This action will build with Xcode and output ipa.'
 inputs:
+  app-id:
+    description: >
+      Specify the App ID.
+
+      ex) com.akiojin.Sample
+    required: false
   workspace:
     description: 'Path to the workspace file'
     required: false
@@ -17,7 +23,7 @@ inputs:
     description: >
       Specifies the name of the ipa file to be output.
     required: false
-    default: ''
+    default: Build
   scheme:
     description: >
       The project's scheme.
@@ -59,6 +65,12 @@ inputs:
     description: >
       The ID of your Developer Portal team if you're in multiple teams.
     required: true
+  provisioning-profile-name:
+    description: >
+      Specify the Name of the provisioning profile.
+      If app-id is specified, this parameter must be specified.
+    required: false
+    default: ''
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -1,45 +1,32 @@
 import * as core from '@actions/core'
-import * as exec from '@actions/exec'
-import { ArgumentBuilder } from '@akiojin/argument-builder'
 import * as os from 'os'
+import XcodeHelper from './XcodeHelper'
 
 const IsMacOS = os.platform() === 'darwin'
-
-async function BuildXcodeProject()
-{
-	const builder = new ArgumentBuilder()
-	builder.Append('gym')
-
-	const workspace = core.getInput('workspace')
-	if (workspace !== '') {
-		builder.Append('--workspace', workspace)
-	} else {
-		builder.Append('--project', core.getInput('project'))
-	}
-
-	builder
-		.Append('--output_directory', core.getInput('output-directory'))
-		.Append('--scheme', core.getInput('scheme'))
-		.Append('--sdk', core.getInput('sdk'))
-		.Append('--configuration', core.getInput('configuration'))
-		.Append('--include_bitcode', core.getBooleanInput('include-bitcode').toString())
-		.Append('--include_symbols', core.getBooleanInput('include-symbols').toString())
-		.Append('--export_method', core.getInput('export-method'))
-		.Append('--export_team_id', core.getInput('team-id'))
-
-	if (core.getInput('output-name') !== '') {
-		builder.Append('--output_name', core.getInput('output-name'))
-	}
-
-	core.startGroup('Run fastlane "gym"')
-	await exec.exec('fastlane', builder.Build())
-	core.endGroup()
-}
 
 async function Run()
 {
 	try {
-		BuildXcodeProject()
+		const plist = await XcodeHelper.GenerateExportOptionsPlist(
+			process.env.RUNNER_TEMP || '',
+			core.getInput('app-id'),
+			core.getInput('provisioning-profile-name'),
+			core.getBooleanInput('include-bitcode'),
+			core.getBooleanInput('include-symbols'),
+			core.getBooleanInput('strip-swift-symbols'))
+
+		await XcodeHelper.Export(
+			core.getInput('configuration'),
+			core.getInput('export-method'),
+			core.getBooleanInput('include-bitcode'),
+			core.getBooleanInput('include-symbols'),
+			core.getInput('output-directory'),
+			core.getInput('output-name'),
+			plist,
+			core.getInput('project-directory'),
+			core.getInput('scheme'),
+			core.getInput('sdk'),
+			core.getInput('team-id'))
 	} catch (ex: any) {
 		core.setFailed(ex.message)
 	}
